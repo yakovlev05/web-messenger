@@ -1,9 +1,19 @@
+name: web-messenger
+
+volumes:
+  web-messenger-data:
+    external: true
+
 services:
-  postgres:
-    image: 'postgres:latest'
+  web-messenger-db:
+    image: postgres:latest
+    restart: always
+    container_name: web-messenger-db
     environment:
-      - 'POSTGRES_DB=mydatabase'
-      - 'POSTGRES_PASSWORD=secret'
-      - 'POSTGRES_USER=myuser'
+      - POSTGRES_DB=mydata
+      - POSTGRES_PASSWORD=secret
+      - POSTGRES_USER=user
     ports:
-      - '5432'
+      - 5432:5432
+    volumes:
+      - web-messenger-data:/var/lib/postgresql/data

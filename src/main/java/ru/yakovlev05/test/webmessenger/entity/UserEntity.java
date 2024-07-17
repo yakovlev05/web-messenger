@@ -2,8 +2,6 @@ package ru.yakovlev05.test.webmessenger.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
 @Data
 @Entity
