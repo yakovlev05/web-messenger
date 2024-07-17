@@ -4,6 +4,10 @@ volumes:
   web-messenger-data:
     external: true
 
+networks:
+  web-messenger-network:
+    external: true
+
 services:
   web-messenger-db:
     image: postgres:latest
@@ -17,3 +21,17 @@ services:
       - 5432:5432
     volumes:
       - web-messenger-data:/var/lib/postgresql/data
+    networks:
+      - web-messenger-network
+  web-messenger-backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    container_name: web-messenger-backend
+    ports:
+      - 8080:8080
+    networks:
+      - web-messenger-network
+    depends_on:
+      - web-messenger-db
