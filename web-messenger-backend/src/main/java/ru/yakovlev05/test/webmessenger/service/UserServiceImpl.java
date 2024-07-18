@@ -1,33 +1,23 @@
 package ru.yakovlev05.test.webmessenger.service;
 
 import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
 import ru.yakovlev05.test.webmessenger.dao.UserRepository;
 import ru.yakovlev05.test.webmessenger.entity.UserEntity;
 
-import java.util.List;
-
 @AllArgsConstructor
+@Service
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
 
     @Override
-    public List<UserEntity> getAllUsers() {
-        return userRepository.findAll();
+    public UserEntity getUser(String username) {
+        return userRepository.findUserEntityByUsername(username).orElse(null);
     }
 
     @Override
-    public void saveUser(UserEntity user) {
-        userRepository.save(user);
-    }
-
-    @Override
-    public UserEntity getUser(long id) {
-        return userRepository.findById(id).orElse(null);
-    }
-
-    @Override
-    public void deleteUser(long id) {
-        userRepository.deleteById(id);
+    public void deleteUser(String username) {
+        userRepository.deleteUserEntitiesByUsername(username);
     }
 }
