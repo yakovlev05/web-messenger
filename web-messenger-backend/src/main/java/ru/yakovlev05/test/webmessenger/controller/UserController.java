@@ -30,13 +30,9 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
-//    @DeleteMapping("/{username}")
-//    public ResponseEntity<String> deleteUser(@PathVariable String username) {
-//
-//    }
-//
-//    @PutMapping("/me")
-//    public ResponseEntity<MessageModel> updateUser(@RequestBody UserModel userModel) {
-//
-//    }
+    @DeleteMapping("/{username}")
+    public ResponseEntity<?> deleteUser(@PathVariable String username) {
+        userService.deleteUser(username);
+        return ResponseEntity.ok("User " + username + " has been deleted");
+    }
 }
