@@ -30,7 +30,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDetailsService userDetailsServer() {
+    public UserDetailsService userDetailsService() {
         return this::getUser;
     }
 }

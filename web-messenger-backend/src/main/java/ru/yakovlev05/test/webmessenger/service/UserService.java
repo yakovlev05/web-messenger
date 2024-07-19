@@ -10,5 +10,5 @@ public interface UserService {
 
     UserEntity getCurrentUser();
 
-    UserDetailsService userDetailsServer();
+    UserDetailsService userDetailsService();
 }
