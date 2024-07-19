@@ -2,6 +2,7 @@ package ru.yakovlev05.test.webmessenger.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 import ru.yakovlev05.test.webmessenger.dao.UserRepository;
 import ru.yakovlev05.test.webmessenger.entity.UserEntity;
@@ -26,5 +27,10 @@ public class UserServiceImpl implements UserService {
     public UserEntity getCurrentUser() {
         var username = SecurityContextHolder.getContext().getAuthentication().getName();
         return getUser(username);
+    }
+
+    @Override
+    public UserDetailsService userDetailsServer() {
+        return this::getUser;
     }
 }
