@@ -15,16 +15,19 @@ databaseChangeLog:
                     nullable: false
               - column:
                   name: name
-                  type: varchar
+                  type: varchar(255)
               - column:
                   name: surname
-                  type: varchar
+                  type: varchar(255)
               - column:
                   name: username
-                  type: varchar
+                  type: varchar(255)
               - column:
                   name: password
-                  type: varchar
+                  type: varchar(255)
               - column:
                   name: email
-                  type: varchar
+                  type: varchar(255)
+              - column:
+                  name: role
+                  type: varchar(255)

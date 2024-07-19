@@ -31,6 +31,10 @@ public class UserEntity implements UserDetails {
     @Column(name = "email")
     private String email;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role")
+    private Role role;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of();
