@@ -1,6 +1,7 @@
 package ru.yakovlev05.test.webmessenger.service;
 
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import ru.yakovlev05.test.webmessenger.dao.UserRepository;
 import ru.yakovlev05.test.webmessenger.entity.UserEntity;
@@ -19,5 +20,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUser(String username) {
         userRepository.deleteUserEntitiesByUsername(username);
+    }
+
+    @Override
+    public UserEntity getCurrentUser() {
+        var username = SecurityContextHolder.getContext().getAuthentication().getName();
+        return getUser(username);
     }
 }
