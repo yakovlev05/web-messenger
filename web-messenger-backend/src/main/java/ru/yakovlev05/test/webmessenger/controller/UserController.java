@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.yakovlev05.test.webmessenger.model.MessageModel;
-import ru.yakovlev05.test.webmessenger.model.user.UserModel;
+import ru.yakovlev05.test.webmessenger.dto.MessageDto;
+import ru.yakovlev05.test.webmessenger.dto.user.UserDto;
 import ru.yakovlev05.test.webmessenger.service.UserService;
 
 @RequiredArgsConstructor
@@ -19,9 +19,9 @@ public class UserController {
         var user = userService.getUser(username);
         if (user == null) return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
-                .body(new MessageModel("User not found for username: " + username));
+                .body(new MessageDto("User not found for username: " + username));
 
-        var response = new UserModel(
+        var response = new UserDto(
                 user.getName(),
                 user.getSurname(),
                 user.getUsername(),

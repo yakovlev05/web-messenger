@@ -1,10 +1,10 @@
-package ru.yakovlev05.test.webmessenger.model;
+package ru.yakovlev05.test.webmessenger.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class MessageModel {
+public class MessageDto {
     private String message;
 }
