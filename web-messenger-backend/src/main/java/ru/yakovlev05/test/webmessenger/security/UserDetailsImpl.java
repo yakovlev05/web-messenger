@@ -1,4 +1,4 @@
-package security;
+package ru.yakovlev05.test.webmessenger.security;
 
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;

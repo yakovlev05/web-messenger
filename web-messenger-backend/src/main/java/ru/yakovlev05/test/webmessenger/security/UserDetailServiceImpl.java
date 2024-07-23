@@ -1,12 +1,14 @@
-package security;
+package ru.yakovlev05.test.webmessenger.security;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
 import ru.yakovlev05.test.webmessenger.dao.UserRepository;
 import ru.yakovlev05.test.webmessenger.entity.UserEntity;
 
+@Service
 @RequiredArgsConstructor
 public class UserDetailServiceImpl implements UserDetailsService {
 
