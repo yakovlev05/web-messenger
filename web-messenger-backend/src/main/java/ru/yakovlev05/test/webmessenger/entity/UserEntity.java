@@ -2,8 +2,14 @@ package ru.yakovlev05.test.webmessenger.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import ru.yakovlev05.test.webmessenger.entity.enums.Role;
+
+import java.util.Set;
 
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "users")
 public class UserEntity {
@@ -25,4 +31,13 @@ public class UserEntity {
 
     @Column(name = "email")
     private String email;
+
+    @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
+    @CollectionTable(
+            name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id")
+    )
+    @Enumerated(EnumType.STRING)
+    @Column(name = "roles")
+    private Set<Role> roles;
 }
