@@ -20,4 +20,9 @@ public class UserServiceImpl implements UserService {
     public void deleteUser(String username) {
         userRepository.deleteUserEntitiesByUsername(username);
     }
+
+    @Override
+    public void createUser(UserEntity user) {
+        userRepository.save(user);
+    }
 }
