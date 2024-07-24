@@ -4,7 +4,6 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
@@ -71,7 +70,7 @@ public class JwtServiceImpl implements JwtService {
                     .parseSignedClaims(token);
             return true;
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.out.println(e.toString());
             return false;
         }
     }
