@@ -23,6 +23,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void createUser(UserEntity user) {
+        if (userRepository.existsByUsername(user.getUsername()) || userRepository.existsByEmail(user.getEmail())) {
+            throw new RuntimeException(String.format("User with username (%s) or email (%s) already exists",
+                    user.getUsername(), user.getEmail()));
+        }
         userRepository.save(user);
     }
 }
