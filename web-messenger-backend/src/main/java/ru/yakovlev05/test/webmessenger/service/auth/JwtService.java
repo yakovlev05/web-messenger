@@ -4,6 +4,7 @@ import io.jsonwebtoken.Claims;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Date;
+import java.util.Map;
 import java.util.function.Function;
 
 public interface JwtService {
@@ -15,7 +16,9 @@ public interface JwtService {
 
     boolean isTokenExpired(String token);
 
-    boolean validateToken(String token, UserDetails userDetails);
+    boolean validateToken(String token);
 
-    String generateToken(String username, long lifeTime);
+    String generateToken(String username);
+
+    String generateToken(String username, Map<String, Object> claims);
 }

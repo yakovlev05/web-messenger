@@ -33,7 +33,7 @@ public class AuthServiceImpl implements AuthService {
                 .build();
 
         userService.createUser(userEntity);
-        var jwt = jwtService.generateToken(userEntity.getUsername(), 5000000);
+        var jwt = jwtService.generateToken(userEntity.getUsername());
         return new JwtAuthResponseDto(jwt);
     }
 
@@ -43,6 +43,6 @@ public class AuthServiceImpl implements AuthService {
                 loginRequestDto.getPassword()
         ));
 
-        return new JwtAuthResponseDto(jwtService.generateToken(loginRequestDto.getLogin(), 5000000));
+        return new JwtAuthResponseDto(jwtService.generateToken(loginRequestDto.getLogin()));
     }
 }

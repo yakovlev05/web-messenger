@@ -17,15 +17,18 @@ import java.util.function.Function;
 @Service
 public class JwtServiceImpl implements JwtService {
 
-    @Value("${jwt.secret_key}")
+    @Value("${jwt.secretKey}")
     public String secretKey;
+
+    @Value("${jwt.tokenLifeTimeInMs}")
+    public long lifeTime;
 
     private SecretKey getSignKey() {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         return new SecretKeySpec(keyBytes, "HmacSHA256");
     }
 
-    private String createToken(Map<String, Object> claims, String username, long lifeTime) {
+    private String createToken(Map<String, Object> claims, String username) {
         return Jwts.builder()
                 .claims(claims)
                 .subject(username)
@@ -60,13 +63,25 @@ public class JwtServiceImpl implements JwtService {
         return extractExpiration(token).before(new Date());
     }
 
-    public boolean validateToken(String token, UserDetails userDetails) {
-        final String username = extractUsername(token);
-        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+    public boolean validateToken(String token) {
+        try {
+            Jwts.parser()
+                    .verifyWith(getSignKey())
+                    .build()
+                    .parseSignedClaims(token);
+            return true;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return false;
+        }
     }
 
-    public String generateToken(String username, long lifeTime) {
+    public String generateToken(String username) {
         Map<String, Object> claims = new HashMap<>();
-        return createToken(claims, username, lifeTime);
+        return createToken(claims, username);
+    }
+
+    public String generateToken(String username, Map<String, Object> claims) {
+        return createToken(claims, username);
     }
 }
