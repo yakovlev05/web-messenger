@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.yakovlev05.test.webmessenger.dto.MessageDto;
 import ru.yakovlev05.test.webmessenger.dto.user.UserDto;
-import ru.yakovlev05.test.webmessenger.service.UserService;
+import ru.yakovlev05.test.webmessenger.service.user.UserService;
 
 @RequiredArgsConstructor
 @RestController

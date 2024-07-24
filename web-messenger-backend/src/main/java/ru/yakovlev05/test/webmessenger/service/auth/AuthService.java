@@ -1,4 +1,4 @@
-package ru.yakovlev05.test.webmessenger.service;
+package ru.yakovlev05.test.webmessenger.service.auth;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -10,6 +10,7 @@ import ru.yakovlev05.test.webmessenger.dto.auth.LoginRequestDto;
 import ru.yakovlev05.test.webmessenger.dto.auth.RegistrationRequestDto;
 import ru.yakovlev05.test.webmessenger.entity.UserEntity;
 import ru.yakovlev05.test.webmessenger.entity.enums.Role;
+import ru.yakovlev05.test.webmessenger.service.user.UserService;
 
 import java.util.Set;
 

@@ -12,7 +12,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import ru.yakovlev05.test.webmessenger.security.UserDetailServiceImpl;
-import ru.yakovlev05.test.webmessenger.service.JwtService;
+import ru.yakovlev05.test.webmessenger.service.auth.JwtService;
 
 import java.io.IOException;
 

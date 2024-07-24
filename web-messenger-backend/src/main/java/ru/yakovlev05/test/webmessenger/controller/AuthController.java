@@ -5,8 +5,8 @@ import org.springframework.web.bind.annotation.*;
 import ru.yakovlev05.test.webmessenger.dto.auth.JwtAuthResponseDto;
 import ru.yakovlev05.test.webmessenger.dto.auth.LoginRequestDto;
 import ru.yakovlev05.test.webmessenger.dto.auth.RegistrationRequestDto;
-import ru.yakovlev05.test.webmessenger.service.AuthService;
-import ru.yakovlev05.test.webmessenger.service.UserService;
+import ru.yakovlev05.test.webmessenger.service.auth.AuthService;
+import ru.yakovlev05.test.webmessenger.service.user.UserService;
 
 @RestController
 @RequestMapping("/api/v1/auth")

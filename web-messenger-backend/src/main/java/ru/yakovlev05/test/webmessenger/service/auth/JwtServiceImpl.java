@@ -1,10 +1,9 @@
-package ru.yakovlev05.test.webmessenger.service;
+package ru.yakovlev05.test.webmessenger.service.auth;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
-import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -16,11 +15,13 @@ import java.util.Map;
 import java.util.function.Function;
 
 @Service
-public class JwtService {
-    public static final String SECRET_KEY = "secretmagesuperkey123465789oidfigjopasfkiogfaioplkkgosdpsksddfv";
+public class JwtServiceImpl implements JwtService {
+
+    @Value("${jwt.secret_key}")
+    public String secretKey;
 
     private SecretKey getSignKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
+        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         return new SecretKeySpec(keyBytes, "HmacSHA256");
     }
 

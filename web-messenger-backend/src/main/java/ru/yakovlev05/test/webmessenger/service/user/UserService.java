@@ -1,4 +1,4 @@
-package ru.yakovlev05.test.webmessenger.service;
+package ru.yakovlev05.test.webmessenger.service.user;
 
 import ru.yakovlev05.test.webmessenger.entity.UserEntity;
 
