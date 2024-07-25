@@ -1,8 +1,9 @@
 package ru.yakovlev05.test.webmessenger.controller;
 
+
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import ru.yakovlev05.test.webmessenger.dto.MessageDto;
 import ru.yakovlev05.test.webmessenger.dto.user.UserDto;
@@ -15,24 +16,23 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/{username}")
-    public ResponseEntity<?> getUser(@PathVariable String username) {
-        var user = userService.getUser(username);
-        if (user == null) return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
-                .body(new MessageDto("User not found for username: " + username));
-
-        var response = new UserDto(
-                user.getName(),
-                user.getSurname(),
-                user.getUsername(),
-                user.getEmail()
-        );
-        return ResponseEntity.ok(response);
+    public UserDto getUser(@PathVariable String username) {
+        return userService.getUser(username);
     }
 
-    @DeleteMapping("/{username}")
-    public ResponseEntity<?> deleteUser(@PathVariable String username) {
-        userService.deleteUser(username);
-        return ResponseEntity.ok("User " + username + " has been deleted");
+    /**
+     * @param userDetails получаем информацию о пользователе, который прошл авторизацию
+     *                    (наш фильтр). Ещё можно сделать так: Authentication jwt или получить
+     *                    в коде SecurityContextHolder.getContext().getAuthentication();
+     */
+    @GetMapping("/me")
+    public UserDto getMe(@AuthenticationPrincipal UserDetails userDetails) {
+        return userService.getUser(userDetails.getUsername());
+    }
+
+    @DeleteMapping("/me")
+    public MessageDto deleteUser(@AuthenticationPrincipal UserDetails userDetails) {
+        userService.deleteUser(userDetails.getUsername());
+        return new MessageDto(String.format("User %s deleted", userDetails.getUsername()));
     }
 }

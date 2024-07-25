@@ -2,7 +2,6 @@ package ru.yakovlev05.test.webmessenger.configs;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
-import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
@@ -17,9 +16,9 @@ public class SwaggerConfig {
                 .info(new Info()
                         .title("Web Messenger API"))
                 .addSecurityItem(new SecurityRequirement()
-                        .addList("TEST"))
+                        .addList("Bearer Authentication"))
                 .components(new Components()
-                        .addSecuritySchemes("Bearer", new SecurityScheme()
+                        .addSecuritySchemes("Bearer Authentication", new SecurityScheme()
                                 .name("JWT auth")
                                 .type(SecurityScheme.Type.HTTP)
                                 .scheme("bearer")

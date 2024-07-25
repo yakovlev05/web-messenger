@@ -1,8 +1,10 @@
 package ru.yakovlev05.test.webmessenger.service.user;
 
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.yakovlev05.test.webmessenger.dao.UserRepository;
+import ru.yakovlev05.test.webmessenger.dto.user.UserDto;
 import ru.yakovlev05.test.webmessenger.entity.UserEntity;
 import ru.yakovlev05.test.webmessenger.exception.CustomException;
 
@@ -13,13 +15,22 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     @Override
-    public UserEntity getUser(String username) {
-        return userRepository.findByUsername(username).orElse(null);
+    public UserDto getUser(String username) {
+        UserEntity user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new CustomException(String.format("User with username (%s) not found", username)));
+
+        return new UserDto(
+                user.getName(),
+                user.getSurname(),
+                user.getUsername(),
+                user.getEmail()
+        );
     }
 
     @Override
+    @Transactional
     public void deleteUser(String username) {
-        userRepository.deleteUserEntitiesByUsername(username);
+        userRepository.deleteByUsername(username);
     }
 
     @Override

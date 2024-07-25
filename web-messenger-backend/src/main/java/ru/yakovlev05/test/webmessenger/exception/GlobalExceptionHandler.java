@@ -10,6 +10,7 @@ import ru.yakovlev05.test.webmessenger.dto.MessageDto;
 public class GlobalExceptionHandler {
     @ExceptionHandler(CustomException.class)
     public ResponseEntity<MessageDto> handleException(CustomException exception) {
+        System.out.println("Обработка исключения: " + exception.getMessage());
         return new ResponseEntity<>(new MessageDto(exception.getMessage()), HttpStatus.BAD_REQUEST);
     }
 }
