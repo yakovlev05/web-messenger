@@ -8,9 +8,8 @@ import ru.yakovlev05.test.webmessenger.dto.MessageDto;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
-    @ExceptionHandler
-    public ResponseEntity<MessageDto> handleException(Exception exception) {
-        exception.printStackTrace();
+    @ExceptionHandler(CustomException.class)
+    public ResponseEntity<MessageDto> handleException(CustomException exception) {
         return new ResponseEntity<>(new MessageDto(exception.getMessage()), HttpStatus.BAD_REQUEST);
     }
 }
