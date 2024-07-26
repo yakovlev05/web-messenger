@@ -24,6 +24,8 @@ public class UserController {
      * @param userDetails получаем информацию о пользователе, который прошл авторизацию
      *                    (наш фильтр). Ещё можно сделать так: Authentication jwt или получить
      *                    в коде SecurityContextHolder.getContext().getAuthentication();
+     *                    + можно в аргументах метода указать Principal principal, это вернёт объект
+     *                    UsernamePasswordAuthenticationToken
      */
     @GetMapping("/me")
     public UserDto getMe(@AuthenticationPrincipal UserDetails userDetails) {

@@ -2,22 +2,28 @@ package ru.yakovlev05.test.webmessenger.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import ru.yakovlev05.test.webmessenger.dto.message.MessageRequestDto;
 import ru.yakovlev05.test.webmessenger.dto.message.MessageResponseDto;
 import ru.yakovlev05.test.webmessenger.service.message.MessageService;
 
+import java.security.Principal;
+
 @Controller
 @RequiredArgsConstructor
 public class MessageController {
     private final MessageService messageService;
+    private final SimpMessagingTemplate simpMessagingTemplate;
 
     @MessageMapping("/message")
     @SendTo("/topic/messages")
-    public MessageResponseDto processMessage(MessageRequestDto request, @AuthenticationPrincipal UserDetails userDetails) {
+    public MessageResponseDto processMessage(@Payload MessageRequestDto request, Principal principal) {
+        var userDetails = (UserDetails) ((AbstractAuthenticationToken) principal).getPrincipal();
         return messageService.save(request.getMessage(), userDetails.getUsername());
     }
 }
