@@ -43,6 +43,5 @@ public class UserEntity {
     private Set<Role> roles;
 
     @OneToMany(mappedBy = "sender") // поле sender в классе MessageEntity ссылается на это поле
-    @Column(name = "messages")
     private List<MessageEntity> messages;
 }

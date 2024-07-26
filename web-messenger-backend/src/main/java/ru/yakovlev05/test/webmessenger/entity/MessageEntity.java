@@ -22,7 +22,6 @@ public class MessageEntity {
 
     @ManyToOne
     @JoinColumn(name = "sender_id") // столбец sender_id в таблице messages ссылается на столбец id в таблице users
-    @Column(name = "sender")
     private UserEntity sender;
 
     @Column(name = "message")
