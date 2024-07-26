@@ -1,5 +1,6 @@
 package ru.yakovlev05.test.webmessenger.filter;
 
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
@@ -22,7 +23,7 @@ public class JwtAuthChannelInterceptor implements ChannelInterceptor {
     private final UserDetailsService userDetailsService;
 
     @Override
-    public Message<?> preSend(Message<?> message, MessageChannel channel) {
+    public Message<?> preSend(@NonNull Message<?> message, @NonNull MessageChannel channel) {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
         String authHeader = accessor.getFirstNativeHeader(HEADER_NAME);
         if (authHeader != null && authHeader.startsWith(BEARER_PREFIX)) {
