@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import ru.yakovlev05.test.webmessenger.entity.enums.Role;
 
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -40,4 +41,8 @@ public class UserEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "roles")
     private Set<Role> roles;
+
+    @OneToMany(mappedBy = "sender") // поле sender в классе MessageEntity ссылается на это поле
+    @Column(name = "messages")
+    private List<MessageEntity> messages;
 }
