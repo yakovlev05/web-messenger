@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 import ru.yakovlev05.test.webmessenger.service.auth.JwtService;
 
+// Спасибо человеку со статьей и репо https://github.com/PoojithaIrosha/spring-boot-ws-private-chat
 // Именно авторизацию в вебсокетах изучал у него
 @Component
 @RequiredArgsConstructor
