@@ -12,7 +12,7 @@ const LoginPage = () => {
                 />
 
                 <Input.Password
-                    placeholder="Пароль1"
+                    placeholder="Пароль"
                     iconRender={(visible) => (visible ? <EyeTwoTone/> : <EyeInvisibleOutlined/>)}
                 />
 
