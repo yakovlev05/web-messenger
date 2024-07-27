@@ -1,0 +1,73 @@
+name: web-messenger
+
+volumes:
+  web-messenger-data:
+    external: true
+
+networks:
+  web-messenger-network:
+    external: true
+
+services:
+  web-messenger-db:
+    image: postgres:latest
+    restart: always
+    container_name: web-messenger-db
+    env_file:
+      - ./.env
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB} # Название базы данных
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD} # Пароль пользователя
+      - POSTGRES_USER=${POSTGRES_USER} # Имя пользователя
+    ports:
+      - 5432:5432
+    volumes:
+      - web-messenger-data:/var/lib/postgresql/data
+    networks:
+      - web-messenger-network
+  web-messenger-backend:
+    build:
+      context: ./web-messenger-backend
+      dockerfile: Dockerfile
+    restart: always
+    container_name: web-messenger-backend
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD} # Данные от дб
+      - POSTGRES_USER=${POSTGRES_USER}
+      - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL}
+    ports:
+      - 8080:8080
+    networks:
+      - web-messenger-network
+    depends_on:
+      - web-messenger-db
+  web-messenger-frontend: # !!Важно, этот проект Vite + React, для работы hot reload необходимо настроить vite.config.ts
+    build:
+      context: ./web-messenger-client
+      dockerfile: Dockerfile
+      target: dev # Запуск в режиме сервера для разработки
+    restart: always
+    container_name: web-messenger-frontend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./web-messenger-client:/app # Монтирование папки с исходниками для hot reload
+      - /app/node_modules # Использование зависимостей именно контейнера (да, при добавлении либы нужно пересобирать
+    networks:
+      - web-messenger-network
+  web-messenger-nginx:
+    image: nginx:latest
+    container_name: web-messenger-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    restart: always
+    volumes:
+      - ./:/etc/nginx/conf.d # Монтирование конфига nginx
+    networks:
+      - web-messenger-network
+    depends_on:
+      - web-messenger-backend
+      - web-messenger-frontend
