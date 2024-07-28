@@ -1,21 +1,48 @@
-import {Button, Input, Space} from "antd";
+import {Button, Input, notification, Space} from "antd";
 import {EyeInvisibleOutlined, EyeTwoTone} from "@ant-design/icons";
-import React, {useState} from "react";
+import {useState} from "react";
+import {LoginRequest} from "../models/auth/LoginRequest.ts";
 
 interface LoginFormComponentProps {
-    onInputLogin: (event: React.FormEvent<HTMLInputElement>) => void;
-    onInputPassword: (event: React.FormEvent<HTMLInputElement>) => void;
-    onSubmit: () => void;
+    onSubmit: (data: LoginRequest, setLoading: (bool: boolean) => void) => void;
 }
 
 const LoginFormComponent = (props: LoginFormComponentProps) => {
     const [loading, setLoading] = useState(false);
+    const [statusForm, setStatusForm] = useState<{
+        login: '' | "warning" | "error",
+        password: '' | "warning" | "error"
+    }>({login: '', password: ''});
+    const [textForm, setTextForm] =
+        useState<LoginRequest>({login: '', password: ''});
+
 
     const handleSubmit = () => {
-        setLoading(true);
-        props.onSubmit();
+        if (!checkForm()) return;
+
+        props.onSubmit(textForm, setLoading);
     }
 
+    const checkForm = () => {
+        let flag: boolean = true;
+        if (textForm.login.length < 5) {
+            setStatusForm(prevState => ({...prevState, login: 'error'}));
+            notification.warning({message: "Логин не может быть короче 5 символов"})
+            flag = false;
+        } else {
+            setStatusForm(prevState => ({...prevState, login: ''}));
+        }
+
+        if (textForm.password.length < 8) {
+            setStatusForm(prevState => ({...prevState, password: 'error'}));
+            notification.warning({message: "Пароль не может быть короче 8 символов"})
+            flag = false;
+        } else {
+            setStatusForm(prevState => ({...prevState, password: ''}));
+        }
+
+        return flag;
+    }
 
     return (
         <div className="flex items-center justify-center flex-col min-h-screen mx-3">
@@ -23,19 +50,20 @@ const LoginFormComponent = (props: LoginFormComponentProps) => {
             <Space direction="vertical" className="w-full max-w-[400px]">
                 <Input
                     placeholder="Имя пользователя"
-                    className=""
-                    onInput={props.onInputLogin}
+                    status={statusForm.login}
+                    onInput={e => setTextForm({...textForm, login: e.currentTarget.value})}
                 />
 
                 <Input.Password
                     placeholder="Пароль"
                     iconRender={(visible) => (visible ? <EyeTwoTone/> : <EyeInvisibleOutlined/>)}
-                    onInput={props.onInputPassword}
+                    status={statusForm.password}
+                    onInput={e => setTextForm({...textForm, password: e.currentTarget.value})}
                 />
 
                 <Button type="primary"
                         loading={loading}
-                        onSubmit={handleSubmit}>
+                        onClick={handleSubmit}>
                     Войти
                 </Button>
             </Space>
