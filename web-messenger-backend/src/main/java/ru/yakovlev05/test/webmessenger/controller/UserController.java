@@ -37,4 +37,9 @@ public class UserController {
         userService.deleteUser(userDetails.getUsername());
         return new MessageDto(String.format("User %s deleted", userDetails.getUsername()));
     }
+
+    @PutMapping("/me")
+    public UserDto updateUser(@AuthenticationPrincipal UserDetails userDetails, @RequestBody UserDto userDto) {
+        return userService.updateUser(userDto, userDetails.getUsername());
+    }
 }

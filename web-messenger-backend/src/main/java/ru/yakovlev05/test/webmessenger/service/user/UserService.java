@@ -9,4 +9,6 @@ public interface UserService {
     void deleteUser(String username);
 
     void createUser(UserEntity user);
+
+    UserDto updateUser(UserDto userDto, String currentUsername);
 }

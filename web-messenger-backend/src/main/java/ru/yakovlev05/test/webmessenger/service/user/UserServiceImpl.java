@@ -41,4 +41,32 @@ public class UserServiceImpl implements UserService {
         }
         userRepository.save(user);
     }
+
+    @Override
+    @Transactional
+    public UserDto updateUser(UserDto userDto, String currentUsername) {
+        UserEntity user = userRepository.findByUsername(currentUsername)
+                .orElseThrow(() -> new CustomException(String.format("User with username (%s) not found", currentUsername)));
+
+        if (!user.getUsername().equals(userDto.getUsername()) && userRepository.existsByUsername(userDto.getUsername())) {
+            throw new CustomException(String.format("Username (%s) already exists", userDto.getUsername()));
+        }
+
+        if (!user.getEmail().equals(userDto.getEmail()) && userRepository.existsByEmail(userDto.getEmail())) {
+            throw new CustomException(String.format("Email (%s) already exists", userDto.getEmail()));
+        }
+
+        user.setName(userDto.getName());
+        user.setSurname(userDto.getSurname());
+        user.setUsername(userDto.getUsername());
+        user.setEmail(userDto.getEmail());
+
+        userRepository.save(user);
+        return new UserDto(
+                user.getName(),
+                user.getSurname(),
+                user.getUsername(),
+                user.getEmail()
+        );
+    }
 }
