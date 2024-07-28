@@ -42,6 +42,6 @@ public class UserEntity {
     @Column(name = "roles")
     private Set<Role> roles;
 
-    @OneToMany(mappedBy = "sender") // поле sender в классе MessageEntity ссылается на это поле
+    @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL) // поле sender в классе MessageEntity ссылается на это поле
     private List<MessageEntity> messages;
 }
