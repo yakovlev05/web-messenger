@@ -116,7 +116,7 @@ const UpdateUserFormComponent = (props: UpdateUserFormComponentProps) => {
                     <Flex justify="end">
                         <Popconfirm
                             title="Удаление аккаунта"
-                            description="Вы точно хотите удалиьт аккаунт?"
+                            description="Вы точно хотите удалить аккаунт?"
                             onConfirm={onDelete}
                             okText="Да"
                             cancelText="Нет"
