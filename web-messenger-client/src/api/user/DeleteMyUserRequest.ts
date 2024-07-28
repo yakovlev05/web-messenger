@@ -1,7 +1,7 @@
-const GetMyUserRequest = async () => {
+const DeleteMyUserRequestApi = async () => {
     const token = localStorage.getItem("token");
     return fetch('/api/v1/users/me', {
-        method: 'GET',
+        method: 'DELETE',
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
@@ -10,4 +10,4 @@ const GetMyUserRequest = async () => {
     });
 }
 
-export default GetMyUserRequest;
+export default DeleteMyUserRequestApi;
