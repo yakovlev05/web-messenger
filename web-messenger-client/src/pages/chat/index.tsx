@@ -4,37 +4,65 @@ import {MessageModel} from "../../models/message/MessageModel.ts";
 import GetMessagesRequestApi from "../../api/message/GetMessages.ts";
 import {useNavigate} from "react-router-dom";
 import LoaderComponent from "../../components/LoaderComponent.tsx";
+import getMyUserRequest from "../../api/user/GetMyUserRequest.ts";
+import {UserModel} from "../../models/user/UserModel.ts";
 
 const ChatPage = () => {
     const navigate = useNavigate();
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState({myInfo: true, messages: true});
     const [messages, setMessages] = useState<MessageModel[]>([]);
+    const [myUsername, setMyUsername] = useState<string>("");
+    const [page, setPage] = useState<number>(1);
+    const [size] = useState<number>(9);
+
+    const [moreLoading, setMoreLoading] = useState(false);
 
     useEffect(() => {
-        const fetchData = async () => {
-            const response = await GetMessagesRequestApi(1, 15);
+        const getMessages = async () => {
+            setMoreLoading(true);
+            const response = await GetMessagesRequestApi(page, size);
             if (response.ok) {
                 const data: MessageModel[] = await response.json();
                 setMessages(prevState => [...prevState, ...data]);
-            } else if (response.status === 403 || response.status === 401) {
-                console.log("Ошибка авторизации");
-                navigate('/login');
+                setMoreLoading(false);
             } else {
-                console.log("Ошибка при загрузке сообщений " + response);
+                navigate('/login');
             }
         }
 
-        fetchData()
-            .then(() => setTimeout(() => setLoading(false), 500))
-            .catch(() => console.log("Ошибка выполнении функции в эффекте"))
+        getMessages()
+            .then(() => setTimeout(() =>
+                setLoading(prevState => ({...prevState, messages: false})), 500))
+            .catch(() => console.log('Ошибка в выполнении запроса получения сообщений в эффекте'))
+    }, [navigate, page, size]);
+
+    useEffect(() => {
+        const getMyInfo = async () => {
+            const response = await getMyUserRequest();
+            if (response.ok) {
+                const data: UserModel = await response.json();
+                setMyUsername(data.username);
+            } else {
+                navigate('/login');
+            }
+        }
+
+        getMyInfo()
+            .then(() => setTimeout(() => setLoading(prevState => ({...prevState, myInfo: false})), 500))
+            .catch(() => console.log('Ошибка в выполнении запроса получении пользователя в эффекте'))
     }, [navigate]);
 
-    if (loading) {
+    if (loading.messages || loading.myInfo) {
         return (<LoaderComponent/>)
     }
 
     return (
-        <ChatComponent messages={messages} myUsername={"ssdddv"}/>
+        <ChatComponent
+            messages={messages}
+            myUsername={myUsername}
+            setPage={setPage}
+            moreLoading={moreLoading}
+        />
     )
 }
 

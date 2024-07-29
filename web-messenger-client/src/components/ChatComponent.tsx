@@ -3,10 +3,13 @@ import {Button, Typography} from "antd";
 import MessageComponent from "./MessageComponent.tsx";
 import TextArea from "antd/es/input/TextArea";
 import {SendOutlined} from "@ant-design/icons";
+import React from "react";
 
 interface ChatComponentProps {
     messages: MessageModel[];
     myUsername: string
+    setPage: React.Dispatch<React.SetStateAction<number>>;
+    moreLoading: boolean;
 }
 
 const ChatComponent = (props: ChatComponentProps) => {
@@ -26,12 +29,16 @@ const ChatComponent = (props: ChatComponentProps) => {
             <div
                 className="flex-1 bg-[#f5f5f5] max-w-[700px] w-full p-2 flex flex-col justify-between gap-6 pb-6 max-h-full overflow-hidden">
                 <div className="flex gap-2.5 flex-col-reverse overflow-y-auto flex-1">
-                    {props.messages.map((message, index) => (
-                        <MessageComponent message={message} isMyMessage={false} key={index}/>
+                    {props.messages.map((message) => (
+                        <MessageComponent message={message}
+                                          isMyMessage={props.myUsername === message.sender.username}
+                                          key={message.id}/>
                     ))}
 
                     <Button type="dashed"
-                            className="ml-auto mr-auto">
+                            className="ml-auto mr-auto"
+                            onClick={() => props.setPage(prev => prev + 1)}
+                            loading={props.moreLoading}>
                         Больше
                     </Button>
                 </div>
