@@ -10,6 +10,7 @@ import ru.yakovlev05.test.webmessenger.entity.MessageEntity;
 import ru.yakovlev05.test.webmessenger.exception.CustomException;
 
 import java.util.Date;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -39,5 +40,28 @@ public class MessageServiceImpl implements MessageService {
                         .email(messageEntity.getSender().getEmail())
                         .build())
                 .build();
+    }
+
+    @Override
+    public List<MessageResponseDto> getMessages(int page, int size) {
+        return messageRepository.findAll()
+                .stream()
+                .sorted((x1, x2) -> x2.getPublished().compareTo(x1.getPublished()))
+                .skip((long) (page - 1) * size)
+                .limit(size)
+                .map(x -> MessageResponseDto.builder()
+                        .id(x.getId())
+                        .sender(
+                                new UserDto(
+                                        x.getSender().getName(),
+                                        x.getSender().getSurname(),
+                                        x.getSender().getUsername(),
+                                        x.getSender().getEmail()
+                                )
+                        )
+                        .published(x.getPublished())
+                        .message(x.getMessage())
+                        .build())
+                .toList();
     }
 }
