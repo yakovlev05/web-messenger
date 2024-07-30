@@ -7,6 +7,12 @@ import LoaderComponent from "../../components/LoaderComponent.tsx";
 import getMyUserRequest from "../../api/user/GetMyUserRequest.ts";
 import {UserModel} from "../../models/user/UserModel.ts";
 
+// Спасибо этому бро https://www.youtube.com/watch?v=fzYmsQvjzhg
+// @ts-ignore
+import SockJS from 'sockjs-client/dist/sockjs'; // https://www.npmjs.com/package/sockjs-client && https://www.npmjs.com/package/@types/sockjs-client
+// import {over} from 'stompjs'; // https://www.npmjs.com/package/stompjs && https://www.npmjs.com/package/@types/stompjs
+import Stomp from 'stompjs';
+
 const ChatPage = () => {
     const navigate = useNavigate();
     const [loading, setLoading] = useState({myInfo: true, messages: true});
@@ -53,6 +59,24 @@ const ChatPage = () => {
             .then(() => setTimeout(() => setLoading(prevState => ({...prevState, myInfo: false})), 500))
             .catch(() => console.log('Ошибка в выполнении запроса получении пользователя в эффекте'))
     }, [navigate]);
+
+    useEffect(() => {
+        const websocket = () => {
+            const socket = new SockJS('http://localhost/ws');
+            const stompClient = Stomp.over(socket);
+            stompClient.connect({
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }, () => {
+                stompClient.subscribe('/topic/messages', (message) => {
+                    if (message.body) {
+                        console.log(message.body)
+                    }
+                });
+            });
+        }
+
+        websocket();
+    }, []);
 
     if (loading.messages || loading.myInfo) {
         return (<LoaderComponent/>)
