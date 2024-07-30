@@ -30,6 +30,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
+        System.out.println("ЗАПРОС");
         var isWs = request.getRequestURI().contains("/ws");
 
         String authHeader = isWs ? BEARER_PREFIX : request.getHeader(HEADER_NAME);
@@ -55,6 +56,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authToken);
+                    System.out.println("АВТОРИЗОВАН");
                 }
             }
         }
