@@ -3,7 +3,7 @@ import {Button, Typography} from "antd";
 import MessageComponent from "./MessageComponent.tsx";
 import TextArea from "antd/es/input/TextArea";
 import {SendOutlined} from "@ant-design/icons";
-import React from "react";
+import React, {useState} from "react";
 
 interface ChatComponentProps {
     messages: MessageModel[];
@@ -11,18 +11,18 @@ interface ChatComponentProps {
     setPage: React.Dispatch<React.SetStateAction<number>>;
     moreLoading: boolean;
     isHaveMore: boolean;
+    onSendButton: (text: string, setLoading: React.Dispatch<React.SetStateAction<boolean>>) => void;
 }
 
 const ChatComponent = (props: ChatComponentProps) => {
-    // const messagesEndRef = useRef<HTMLDivElement>();
-    // const scrollToBottom = () => {
-    //     if (messagesEndRef.current) {
-    //         messagesEndRef.current.scrollTop = messagesEndRef.current.scrollHeight;
-    //     }
-    // }
-    // // useEffect(() => {
-    // //     scrollToBottom();
-    // // }, []);
+    const [sendIsLoading, setSendIsLoading] = React.useState(false);
+    const [textMessage, setTextMessage] = useState<string>("");
+
+    const handlerSendButton = () => {
+        if (textMessage.length === 0) return;
+        props.onSendButton(textMessage, setSendIsLoading);
+        setTextMessage('');
+    }
 
     return (
         <div className="flex items-center flex-col min-h-screen max-h-screen justify-between mx-3">
@@ -49,12 +49,16 @@ const ChatComponent = (props: ChatComponentProps) => {
                         // value={value}
                         // onChange={(e) => setValue(e.target.value)}
                         placeholder="Введите сообщение"
-                        autoSize={{minRows: 2, maxRows: 3}}
-                        maxLength={100}
+                        autoSize={{minRows: 2, maxRows: 5}}
+                        maxLength={1000}
                         showCount
+                        onInput={(e) => setTextMessage(e.currentTarget.value)}
+                        value={textMessage}
                     />
                     <Button type="primary"
-                            className="mt-auto mb-auto ml-1.5">
+                            className="mt-auto mb-auto ml-1.5"
+                            loading={sendIsLoading}
+                            onClick={handlerSendButton}>
                         <SendOutlined/>
                     </Button>
                 </div>

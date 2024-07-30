@@ -1,5 +1,5 @@
 import ChatComponent from "../../components/ChatComponent.tsx";
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {MessageModel} from "../../models/message/MessageModel.ts";
 import GetMessagesRequestApi from "../../api/message/GetMessages.ts";
 import {useNavigate} from "react-router-dom";
@@ -13,6 +13,7 @@ import SockJS from 'sockjs-client/dist/sockjs'; // https://www.npmjs.com/package
 // import {over} from 'stompjs'; // https://www.npmjs.com/package/stompjs && https://www.npmjs.com/package/@types/stompjs
 import Stomp from 'stompjs';
 import {message} from "antd";
+import {MessageRequest} from "../../models/message/MessageRequest.ts";
 
 const ChatPage = () => {
     const navigate = useNavigate();
@@ -37,7 +38,10 @@ const ChatPage = () => {
             const response = await GetMessagesRequestApi(page, size);
             if (response.ok) {
                 const data: MessageModel[] = await response.json();
-                setMessages(prevState => [...prevState, ...data]);
+                const newMessages = data
+                    .filter(x => !messages
+                        .some(y => y.id === x.id))
+                setMessages(prevState => [...prevState, ...newMessages]);
                 data.length < size ? setIsHaveMore(false) : setIsHaveMore(true);
                 setMoreLoading(false);
             } else {
@@ -69,7 +73,7 @@ const ChatPage = () => {
 
     useEffect(() => {
         const websocket = () => {
-            const socket = new SockJS('/ws');
+            const socket = new SockJS(`/ws?token=${localStorage.getItem('token')}`);
             const stompClient = Stomp.over(socket);
 
             stompClient.connect({
@@ -77,7 +81,7 @@ const ChatPage = () => {
             }, () => {
                 stompClient.subscribe('/topic/messages', (message) => {
                     if (message.body) {
-                        setMessages(prevState => [...prevState, JSON.parse(message.body)]);
+                        setMessages(prevState => [JSON.parse(message.body), ...prevState]);
                     }
                 });
                 setStompClient(stompClient);
@@ -92,6 +96,21 @@ const ChatPage = () => {
 
         websocket();
     }, [messageApi]);
+
+    const sendMessage = (text: string, setSendLoading: React.Dispatch<React.SetStateAction<boolean>>) => {
+        setSendLoading(true);
+        const body: MessageRequest = {message: text};
+
+        if (stompClient) {
+            stompClient.send("/app/message", {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }, JSON.stringify(body));
+        } else {
+            messageApi.error('Ошибка при отправке сообщения (undefined)').then();
+        }
+
+        setSendLoading(false);
+    }
 
     if (loading.messages || loading.myInfo || loading.stompClient) {
         return (
@@ -111,6 +130,7 @@ const ChatPage = () => {
                 setPage={setPage}
                 moreLoading={moreLoading}
                 isHaveMore={isHaveMore}
+                onSendButton={sendMessage}
             />
         </>
     )
