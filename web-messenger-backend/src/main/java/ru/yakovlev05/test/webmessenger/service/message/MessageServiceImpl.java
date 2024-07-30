@@ -43,9 +43,10 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public List<MessageResponseDto> getMessages(int page, int size) {
+    public List<MessageResponseDto> getMessages(int page, int size, long dateInMs) {
         return messageRepository.findAll()
                 .stream()
+                .filter(x -> x.getPublished().compareTo(new Date(dateInMs)) <= 0)
                 .sorted((x1, x2) -> x2.getPublished().compareTo(x1.getPublished()))
                 .skip((long) (page - 1) * size)
                 .limit(size)

@@ -23,6 +23,7 @@ const ChatPage = () => {
     const [myUsername, setMyUsername] = useState<string>("");
     const [page, setPage] = useState<number>(1);
     const [size] = useState<number>(9);
+    const [date] = useState<Date>(new Date());
 
     const [moreLoading, setMoreLoading] = useState(false);
     const [isHaveMore, setIsHaveMore] = useState(true);
@@ -35,7 +36,7 @@ const ChatPage = () => {
     useEffect(() => {
         const getMessages = async () => {
             setMoreLoading(true);
-            const response = await GetMessagesRequestApi(page, size);
+            const response = await GetMessagesRequestApi(page, size, date);
             if (response.ok) {
                 const data: MessageModel[] = await response.json();
                 const newMessages = data

@@ -16,8 +16,16 @@ import java.util.List;
 public class HttpMessageController {
     private final MessageService messageService;
 
+    /**
+     * Поиск сообщений (пагинация)
+     *
+     * @param page номер страницы
+     * @param size количество на страницу
+     * @param dateInMs дату, с которой начинается поиск (то есть сообщения, опубликованные позже не учитываются)
+     * @return список сообщений
+     */
     @GetMapping
-    public List<MessageResponseDto> getMessages(@RequestParam int page, @RequestParam int size) {
-        return messageService.getMessages(page, size);
+    public List<MessageResponseDto> getMessages(@RequestParam int page, @RequestParam int size, @RequestParam long dateInMs) {
+        return messageService.getMessages(page, size, dateInMs);
     }
 }

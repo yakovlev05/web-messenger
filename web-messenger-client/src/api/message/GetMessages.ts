@@ -1,6 +1,6 @@
-const GetMessagesRequestApi = async (page: number, size: number) => {
+const GetMessagesRequestApi = async (page: number, size: number, date: Date) => {
     const token = localStorage.getItem("token");
-    return fetch(`/api/v1/messages?page=${page}&size=${size}`, {
+    return fetch(`/api/v1/messages?page=${page}&size=${size}&dateInMs=${date.getTime()}`, {
         method: 'GET',
         headers: {
             'Accept': 'application/json',
