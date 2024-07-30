@@ -42,12 +42,11 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         // Регистрация точки подключения для клиентов
         // То есть подключение будет идти к адресу ws://localhost:8080
-
         registry
-                .addEndpoint("/ws")
+                .addEndpoint("/ws").setAllowedOrigins("http://localhost", "https://web-messenger.yakovlev05.ru")
                 .withSockJS(); // Соединения через SockJS
 
-        registry.addEndpoint("/ws"); // Соединения через обычный вебсокет
+        registry.addEndpoint("/ws").setAllowedOrigins("http://localhost", "https://web-messenger.yakovlev05.ru"); // Соединения через обычный вебсокет
 
         // withSocketJS() - добавляет поддержку SockJS, однако если оставить только её, то через обычный вебсокет не подключишься
     }

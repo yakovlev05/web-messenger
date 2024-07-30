@@ -8,8 +8,8 @@ import getMyUserRequest from "../../api/user/GetMyUserRequest.ts";
 import {UserModel} from "../../models/user/UserModel.ts";
 
 // Спасибо этому бро https://www.youtube.com/watch?v=fzYmsQvjzhg
-// @ts-ignore
-// import SockJS from 'sockjs-client/dist/sockjs'; // https://www.npmjs.com/package/sockjs-client && https://www.npmjs.com/package/@types/sockjs-client
+
+import SockJS from 'sockjs-client/dist/sockjs'; // https://www.npmjs.com/package/sockjs-client && https://www.npmjs.com/package/@types/sockjs-client
 // import {over} from 'stompjs'; // https://www.npmjs.com/package/stompjs && https://www.npmjs.com/package/@types/stompjs
 import Stomp from 'stompjs';
 import {message} from "antd";
@@ -74,8 +74,8 @@ const ChatPage = () => {
 
     useEffect(() => {
         const websocket = () => {
-            // const socket = new SockJS(`/ws?token=${localStorage.getItem('token')}`);
-            const socket = new WebSocket(`/ws?token=${localStorage.getItem('token')}`);
+            const socket = new SockJS(`/ws?token=${localStorage.getItem('token')}`);
+            // const socket = new WebSocket(`/ws?token=${localStorage.getItem('token')}`);
             const stompClient = Stomp.over(socket);
 
             stompClient.connect({
