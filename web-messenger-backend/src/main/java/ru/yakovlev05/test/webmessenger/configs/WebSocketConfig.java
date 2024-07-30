@@ -45,11 +45,9 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
         registry
                 .addEndpoint("/ws")
-                .setAllowedOrigins("*")
                 .withSockJS(); // Соединения через SockJS
 
-        registry.addEndpoint("/ws")
-                .setAllowedOrigins("*"); // Соединения через обычный вебсокет
+        registry.addEndpoint("/ws"); // Соединения через обычный вебсокет
 
         // withSocketJS() - добавляет поддержку SockJS, однако если оставить только её, то через обычный вебсокет не подключишься
     }
