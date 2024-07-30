@@ -31,19 +31,23 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
         var isWs = request.getRequestURI().contains("/ws");
+        System.out.println("Это подключение вебсокет: " + isWs);
 
         String authHeader = isWs ? BEARER_PREFIX : request.getHeader(HEADER_NAME);
         if (authHeader != null && authHeader.startsWith(BEARER_PREFIX)) {
             String jwtToken = authHeader.substring(BEARER_PREFIX.length());
+            System.out.println("Токен из заголовка: " + jwtToken);
 
             ////
             if (request.getRequestURI().contains("/ws")) {
                 jwtToken = request.getParameter("token");
+                System.out.println("Токен из параметра(вебсокет): " + jwtToken);
             }
             ////
 
             if (jwtService.validateToken(jwtToken)) {
                 String username = jwtService.extractUsername(jwtToken);
+                System.out.println("Имя пользователя из токена: " + username);
 
                 if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                     var userDetails = userDetailService.loadUserByUsername(username);
@@ -52,7 +56,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                             null,
                             userDetails.getAuthorities()
                     );
-
+                    System.out.println("Пользователь найден: " + userDetails.getUsername());
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authToken);
                 }
