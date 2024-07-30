@@ -10,6 +10,7 @@ interface ChatComponentProps {
     myUsername: string
     setPage: React.Dispatch<React.SetStateAction<number>>;
     moreLoading: boolean;
+    isHaveMore: boolean;
 }
 
 const ChatComponent = (props: ChatComponentProps) => {
@@ -38,7 +39,8 @@ const ChatComponent = (props: ChatComponentProps) => {
                     <Button type="dashed"
                             className="ml-auto mr-auto"
                             onClick={() => props.setPage(prev => prev + 1)}
-                            loading={props.moreLoading}>
+                            loading={props.moreLoading}
+                            hidden={!props.isHaveMore}>
                         Больше
                     </Button>
                 </div>

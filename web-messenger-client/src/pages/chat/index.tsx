@@ -16,6 +16,7 @@ const ChatPage = () => {
     const [size] = useState<number>(9);
 
     const [moreLoading, setMoreLoading] = useState(false);
+    const [isHaveMore, setIsHaveMore] = useState(true);
 
     useEffect(() => {
         const getMessages = async () => {
@@ -24,6 +25,7 @@ const ChatPage = () => {
             if (response.ok) {
                 const data: MessageModel[] = await response.json();
                 setMessages(prevState => [...prevState, ...data]);
+                data.length < size ? setIsHaveMore(false) : setIsHaveMore(true);
                 setMoreLoading(false);
             } else {
                 navigate('/login');
@@ -62,6 +64,7 @@ const ChatPage = () => {
             myUsername={myUsername}
             setPage={setPage}
             moreLoading={moreLoading}
+            isHaveMore={isHaveMore}
         />
     )
 }
