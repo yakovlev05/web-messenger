@@ -24,7 +24,7 @@ public class MessageEntity {
     @JoinColumn(name = "sender_id") // столбец sender_id в таблице messages ссылается на столбец id в таблице users
     private UserEntity sender;
 
-    @Column(name = "message")
+    @Column(name = "message", length = 1000)
     private String message;
 
     @Column(name = "published")
