@@ -2,6 +2,7 @@ package ru.yakovlev05.test.webmessenger.configs;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.converter.DefaultContentTypeResolver;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
@@ -24,6 +25,9 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     private final JwtAuthChannelInterceptor jwtAuthChannelInterceptor;
 
+    @Value("${websocket.allowedOrigins}")
+    private String[] allowedOrigins;
+
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
 
@@ -43,10 +47,10 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         // Регистрация точки подключения для клиентов
         // То есть подключение будет идти к адресу ws://localhost:8080
         registry
-                .addEndpoint("/ws").setAllowedOrigins("http://localhost", "https://web-messenger.yakovlev05.ru")
+                .addEndpoint("/ws").setAllowedOrigins(allowedOrigins)
                 .withSockJS(); // Соединения через SockJS
 
-        registry.addEndpoint("/ws").setAllowedOrigins("http://localhost", "https://web-messenger.yakovlev05.ru"); // Соединения через обычный вебсокет
+        registry.addEndpoint("/ws").setAllowedOrigins(allowedOrigins); // Соединения через обычный вебсокет
 
         // withSocketJS() - добавляет поддержку SockJS, однако если оставить только её, то через обычный вебсокет не подключишься
     }
