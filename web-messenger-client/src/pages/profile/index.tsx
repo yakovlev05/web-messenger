@@ -5,6 +5,7 @@ import {useEffect, useState} from "react";
 import GetMyUserRequest from "../../api/user/GetMyUserRequest.ts";
 import LoaderComponent from "../../components/LoaderComponent.tsx";
 import GetUserRequest from "../../api/user/GetUserRequest.ts";
+import FloatChatButtonComponent from "../../components/FloatChatButtonComponent.tsx";
 
 const ProfilePage = () => {
     const navigate = useNavigate();
@@ -61,7 +62,10 @@ const ProfilePage = () => {
     }
 
     return (
-        <UserViewFormComponent data={data} isMyAccount={isMyAccount}/>
+        <>
+            <UserViewFormComponent data={data} isMyAccount={isMyAccount}/>
+            <FloatChatButtonComponent/>
+        </>
     )
 }
 
