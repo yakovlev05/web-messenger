@@ -1,12 +1,14 @@
 import {RegistrationRequest} from "../models/auth/RegistrationRequest.ts";
 import {useState} from "react";
 import {Button, Form, Input} from "antd";
+import {useNavigate} from "react-router-dom";
 
 interface RegistrationFormComponentProps {
     onSubmit: (data: RegistrationRequest, setLoading: (bool: boolean) => void) => void;
 }
 
 const RegistrationFormComponent = (props: RegistrationFormComponentProps) => {
+    const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const [textForm, setTextForm] =
         useState<RegistrationRequest>({
@@ -77,6 +79,12 @@ const RegistrationFormComponent = (props: RegistrationFormComponentProps) => {
                     </Button>
                 </Form.Item>
             </Form>
+            <div>
+                <p className="mt-3">Уже зарегистрированы?
+                    <Button type="link" size="large"
+                            onClick={() => navigate('/login')}>Войти</Button>
+                </p>
+            </div>
         </div>
     )
 }
