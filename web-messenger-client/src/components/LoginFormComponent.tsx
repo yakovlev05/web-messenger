@@ -2,12 +2,14 @@ import {Button, Input, notification, Space} from "antd";
 import {EyeInvisibleOutlined, EyeTwoTone} from "@ant-design/icons";
 import {useState} from "react";
 import {LoginRequest} from "../models/auth/LoginRequest.ts";
+import {useNavigate} from "react-router-dom";
 
 interface LoginFormComponentProps {
     onSubmit: (data: LoginRequest, setLoading: (bool: boolean) => void) => void;
 }
 
 const LoginFormComponent = (props: LoginFormComponentProps) => {
+    const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const [statusForm, setStatusForm] = useState<{
         login: '' | "warning" | "error",
@@ -67,6 +69,11 @@ const LoginFormComponent = (props: LoginFormComponentProps) => {
                     Войти
                 </Button>
             </Space>
+            <div>
+                <p className="mt-3">Нет аккаунта? 
+                    <Button type="link" size="large" onClick={()=>navigate('/registration')}>Зарегистрироваться</Button>
+                </p>
+            </div>
         </div>
     )
 }
