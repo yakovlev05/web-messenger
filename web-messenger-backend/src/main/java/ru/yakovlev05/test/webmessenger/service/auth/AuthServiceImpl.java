@@ -23,14 +23,10 @@ public class AuthServiceImpl implements AuthService {
     private final AuthenticationManager authenticationManager;
 
     public JwtAuthResponseDto registration(RegistrationRequestDto registrationRequestDto) {
-        var userEntity = UserEntity.builder()
-                .email(registrationRequestDto.getEmail())
-                .username(registrationRequestDto.getUsername())
-                .password(passwordEncoder.encode(registrationRequestDto.getPassword()))
-                .name(registrationRequestDto.getName())
-                .surname(registrationRequestDto.getSurname())
-                .roles(Set.of(Role.ROLE_USER))
-                .build();
+        UserEntity userEntity = toUserEntity(
+                registrationRequestDto,
+                passwordEncoder.encode(registrationRequestDto.getPassword())
+        );
 
         userService.createUser(userEntity);
         var jwt = jwtService.generateToken(userEntity.getUsername());
@@ -44,5 +40,16 @@ public class AuthServiceImpl implements AuthService {
         ));
 
         return new JwtAuthResponseDto(jwtService.generateToken(loginRequestDto.getLogin()));
+    }
+
+    private UserEntity toUserEntity(RegistrationRequestDto registrationRequestDto, String encodedPassword) {
+        return UserEntity.builder()
+                .email(registrationRequestDto.getEmail())
+                .username(registrationRequestDto.getUsername())
+                .password(encodedPassword)
+                .name(registrationRequestDto.getName())
+                .surname(registrationRequestDto.getSurname())
+                .roles(Set.of(Role.ROLE_USER))
+                .build();
     }
 }
