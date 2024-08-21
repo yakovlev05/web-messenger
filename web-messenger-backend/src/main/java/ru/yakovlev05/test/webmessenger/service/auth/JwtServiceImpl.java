@@ -20,19 +20,22 @@ public class JwtServiceImpl implements JwtService {
     public String secretKey;
 
     @Value("${jwt.tokenLifeTimeInMs}")
-    public long lifeTime;
+    public long accessTokenLifeTime;
+
+    @Value("${jwt.refreshTokenLifeTime}")
+    public long refreshTokenLifeTime;
 
     private SecretKey getSignKey() {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         return new SecretKeySpec(keyBytes, "HmacSHA256");
     }
 
-    private String createToken(Map<String, Object> claims, String username) {
+    private String createToken(Map<String, Object> claims, String username, long lifeTimeInMs) {
         return Jwts.builder()
                 .claims(claims)
                 .subject(username)
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + lifeTime))
+                .expiration(new Date(System.currentTimeMillis() + lifeTimeInMs))
                 .signWith(getSignKey())
                 .compact();
     }
@@ -70,17 +73,26 @@ public class JwtServiceImpl implements JwtService {
                     .parseSignedClaims(token);
             return true;
         } catch (Exception e) {
-            System.out.println(e.toString());
+            System.out.println(e.getMessage());
             return false;
         }
     }
 
     public String generateToken(String username) {
         Map<String, Object> claims = new HashMap<>();
-        return createToken(claims, username);
+        return createToken(claims, username, accessTokenLifeTime);
     }
 
     public String generateToken(String username, Map<String, Object> claims) {
-        return createToken(claims, username);
+        return createToken(claims, username, accessTokenLifeTime);
+    }
+
+    @Override
+    public String generateRefreshToken(String username) {
+        return createToken(
+                new HashMap<>(),
+                username,
+                refreshTokenLifeTime
+        );
     }
 }

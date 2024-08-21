@@ -18,4 +18,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleException(Exception exception) {
         return new ResponseEntity<>("Internal Server Error: " + exception.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<String> handleException(UnauthorizedException exception) {
+        return new ResponseEntity<>("Unauthorized: " + exception.getMessage(), HttpStatus.UNAUTHORIZED);
+    }
 }

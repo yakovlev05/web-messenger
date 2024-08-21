@@ -1,7 +1,6 @@
 package ru.yakovlev05.test.webmessenger.service.auth;
 
 import io.jsonwebtoken.Claims;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Date;
 import java.util.Map;
@@ -21,4 +20,6 @@ public interface JwtService {
     String generateToken(String username);
 
     String generateToken(String username, Map<String, Object> claims);
+
+    String generateRefreshToken(String username);
 }
