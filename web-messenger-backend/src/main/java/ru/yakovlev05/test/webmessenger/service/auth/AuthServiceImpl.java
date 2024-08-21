@@ -3,7 +3,6 @@ package ru.yakovlev05.test.webmessenger.service.auth;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.yakovlev05.test.webmessenger.dto.auth.JwtAuthResponseDto;
 import ru.yakovlev05.test.webmessenger.dto.auth.LoginRequestDto;
@@ -19,18 +18,10 @@ import java.util.Set;
 public class AuthServiceImpl implements AuthService {
     private final UserService userService;
     private final JwtService jwtService;
-    private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
 
     public JwtAuthResponseDto registration(RegistrationRequestDto registrationRequestDto) {
-        var userEntity = UserEntity.builder()
-                .email(registrationRequestDto.getEmail())
-                .username(registrationRequestDto.getUsername())
-                .password(passwordEncoder.encode(registrationRequestDto.getPassword()))
-                .name(registrationRequestDto.getName())
-                .surname(registrationRequestDto.getSurname())
-                .roles(Set.of(Role.ROLE_USER))
-                .build();
+        var userEntity = toUserEntity(registrationRequestDto);
 
         userService.createUser(userEntity);
         var jwt = jwtService.generateToken(userEntity.getUsername());
@@ -44,5 +35,16 @@ public class AuthServiceImpl implements AuthService {
         ));
 
         return new JwtAuthResponseDto(jwtService.generateToken(loginRequestDto.getLogin()));
+    }
+
+    private UserEntity toUserEntity(RegistrationRequestDto request) {
+        return UserEntity.builder()
+                .email(request.getEmail())
+                .username(request.getUsername())
+                .password(request.getPassword())
+                .name(request.getName())
+                .surname(request.getSurname())
+                .roles(Set.of(Role.ROLE_USER))
+                .build();
     }
 }
