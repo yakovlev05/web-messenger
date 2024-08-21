@@ -7,6 +7,7 @@ import ru.yakovlev05.test.webmessenger.dao.UserRepository;
 import ru.yakovlev05.test.webmessenger.dto.message.MessageResponseDto;
 import ru.yakovlev05.test.webmessenger.dto.user.UserDto;
 import ru.yakovlev05.test.webmessenger.entity.MessageEntity;
+import ru.yakovlev05.test.webmessenger.entity.UserEntity;
 import ru.yakovlev05.test.webmessenger.exception.CustomException;
 
 import java.util.Date;
@@ -20,26 +21,15 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public MessageResponseDto save(String message, String senderUsername) {
-        var messageEntity = MessageEntity.builder()
-                .message(message)
-                .published(new Date())
-                .sender(userRepository.findByUsername(senderUsername)
-                        .orElseThrow(() -> new CustomException(String.format("User with username %s not found", senderUsername))))
-                .build();
+        var messageEntity = toMessageEntity(
+                message,
+                userRepository.findByUsername(senderUsername)
+                        .orElseThrow(() -> new CustomException(String.format("User with username %s not found", senderUsername)))
+        );
 
         messageRepository.save(messageEntity);
 
-        return MessageResponseDto.builder()
-                .id(messageEntity.getId())
-                .message(messageEntity.getMessage())
-                .published(messageEntity.getPublished())
-                .sender(UserDto.builder()
-                        .name(messageEntity.getSender().getName())
-                        .surname(messageEntity.getSender().getSurname())
-                        .username(messageEntity.getSender().getUsername())
-                        .email(messageEntity.getSender().getEmail())
-                        .build())
-                .build();
+        return toMessageResponseDto(messageEntity);
     }
 
     @Override
@@ -50,19 +40,33 @@ public class MessageServiceImpl implements MessageService {
                 .sorted((x1, x2) -> x2.getPublished().compareTo(x1.getPublished()))
                 .skip((long) (page - 1) * size)
                 .limit(size)
-                .map(x -> MessageResponseDto.builder()
-                        .id(x.getId())
-                        .sender(
-                                new UserDto(
-                                        x.getSender().getName(),
-                                        x.getSender().getSurname(),
-                                        x.getSender().getUsername(),
-                                        x.getSender().getEmail()
-                                )
-                        )
-                        .published(x.getPublished())
-                        .message(x.getMessage())
-                        .build())
+                .map(this::toMessageResponseDto)
                 .toList();
+    }
+
+    private MessageEntity toMessageEntity(String message, UserEntity sender) {
+        return MessageEntity.builder()
+                .message(message)
+                .published(new Date())
+                .sender(sender)
+                .build();
+    }
+
+    private MessageResponseDto toMessageResponseDto(MessageEntity message) {
+        return MessageResponseDto.builder()
+                .id(message.getId())
+                .message(message.getMessage())
+                .published(message.getPublished())
+                .sender(toUserDto(message.getSender()))
+                .build();
+    }
+
+    private UserDto toUserDto(UserEntity user) {
+        return UserDto.builder()
+                .name(user.getName())
+                .surname(user.getSurname())
+                .username(user.getUsername())
+                .email(user.getEmail())
+                .build();
     }
 }
