@@ -13,4 +13,9 @@ public class GlobalExceptionHandler {
         System.out.println("Обработка исключения: " + exception.getMessage());
         return new ResponseEntity<>(new MessageDto(exception.getMessage()), HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<String> handleException(Exception exception) {
+        return new ResponseEntity<>("Internal Server Error: " + exception.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }
