@@ -5,10 +5,10 @@ import org.springframework.stereotype.Service;
 import ru.yakovlev05.test.webmessenger.dao.MessageRepository;
 import ru.yakovlev05.test.webmessenger.dao.UserRepository;
 import ru.yakovlev05.test.webmessenger.dto.message.MessageResponseDto;
-import ru.yakovlev05.test.webmessenger.dto.user.UserDto;
 import ru.yakovlev05.test.webmessenger.entity.MessageEntity;
 import ru.yakovlev05.test.webmessenger.entity.UserEntity;
 import ru.yakovlev05.test.webmessenger.exception.CustomException;
+import ru.yakovlev05.test.webmessenger.mapper.UserMapper;
 
 import java.util.Date;
 import java.util.List;
@@ -18,6 +18,7 @@ import java.util.List;
 public class MessageServiceImpl implements MessageService {
     private final MessageRepository messageRepository;
     private final UserRepository userRepository;
+    private final UserMapper userMapper;
 
     @Override
     public MessageResponseDto save(String message, String senderUsername) {
@@ -38,19 +39,7 @@ public class MessageServiceImpl implements MessageService {
                 .sorted((x1, x2) -> x2.getPublished().compareTo(x1.getPublished()))
                 .skip((long) (page - 1) * size)
                 .limit(size)
-                .map(x -> MessageResponseDto.builder()
-                        .id(x.getId())
-                        .sender(
-                                new UserDto(
-                                        x.getSender().getName(),
-                                        x.getSender().getSurname(),
-                                        x.getSender().getUsername(),
-                                        x.getSender().getEmail()
-                                )
-                        )
-                        .published(x.getPublished())
-                        .message(x.getMessage())
-                        .build())
+                .map(this::toMessageResponseDto)
                 .toList();
     }
 
@@ -67,16 +56,7 @@ public class MessageServiceImpl implements MessageService {
                 .id(message.getId())
                 .message(message.getMessage())
                 .published(message.getPublished())
-                .sender(toUserDto(message.getSender()))
-                .build();
-    }
-
-    private UserDto toUserDto(UserEntity user) {
-        return UserDto.builder()
-                .name(user.getName())
-                .surname(user.getSurname())
-                .username(user.getUsername())
-                .email(user.getEmail())
+                .sender(userMapper.toUserDto(message.getSender()))
                 .build();
     }
 }

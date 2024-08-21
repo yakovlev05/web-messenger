@@ -7,24 +7,21 @@ import ru.yakovlev05.test.webmessenger.dao.UserRepository;
 import ru.yakovlev05.test.webmessenger.dto.user.UserDto;
 import ru.yakovlev05.test.webmessenger.entity.UserEntity;
 import ru.yakovlev05.test.webmessenger.exception.CustomException;
+import ru.yakovlev05.test.webmessenger.mapper.UserMapper;
 
 @AllArgsConstructor
 @Service
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final UserMapper userMapper;
 
     @Override
     public UserDto getUser(String username) {
         UserEntity user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new CustomException(String.format("User with username (%s) not found", username)));
 
-        return new UserDto(
-                user.getName(),
-                user.getSurname(),
-                user.getUsername(),
-                user.getEmail()
-        );
+        return userMapper.toUserDto(user);
     }
 
     @Override
@@ -62,11 +59,6 @@ public class UserServiceImpl implements UserService {
         user.setEmail(userDto.getEmail());
 
         userRepository.save(user);
-        return new UserDto(
-                user.getName(),
-                user.getSurname(),
-                user.getUsername(),
-                user.getEmail()
-        );
+        return userMapper.toUserDto(user);
     }
 }
