@@ -14,7 +14,9 @@ public class SwaggerConfig {
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
                 .info(new Info()
-                        .title("Web Messenger API"))
+                        .title("Web Messenger API")
+                        .version("1.0")
+                        .description("REST API for Web Messenger"))
                 .addSecurityItem(new SecurityRequirement()
                         .addList("Bearer Authentication"))
                 .components(new Components()
