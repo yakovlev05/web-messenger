@@ -14,5 +14,6 @@ public interface MessageMapper {
     MessageResponseDto toMessageResponseDto(MessageEntity messageEntity);
 
     @Mapping(target = "published", expression = "java(new Date())")
+    @Mapping(target = "sender", source = "sender")
     MessageEntity toMessageEntity(String message, UserEntity sender);
 }
