@@ -15,5 +15,6 @@ public interface MessageMapper {
 
     @Mapping(target = "published", expression = "java(new Date())")
     @Mapping(target = "sender", source = "sender")
+    @Mapping(target = "id", ignore = true)
     MessageEntity toMessageEntity(String message, UserEntity sender);
 }
