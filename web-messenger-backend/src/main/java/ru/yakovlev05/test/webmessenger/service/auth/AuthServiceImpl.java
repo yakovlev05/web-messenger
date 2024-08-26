@@ -13,6 +13,7 @@ import ru.yakovlev05.test.webmessenger.dto.auth.RegistrationRequestDto;
 import ru.yakovlev05.test.webmessenger.entity.UserEntity;
 import ru.yakovlev05.test.webmessenger.entity.enums.Role;
 import ru.yakovlev05.test.webmessenger.exception.UnauthorizedException;
+import ru.yakovlev05.test.webmessenger.mapper.UserMapper;
 import ru.yakovlev05.test.webmessenger.service.user.UserService;
 
 import java.util.Set;
@@ -25,12 +26,14 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
+    private final UserMapper userMapper;
 
     @Override
     public JwtAuthResponseDto registration(RegistrationRequestDto registrationRequestDto) {
-        UserEntity userEntity = toUserEntity(
+        UserEntity userEntity = userMapper.toUserEntity(
                 registrationRequestDto,
-                passwordEncoder.encode(registrationRequestDto.getPassword())
+                passwordEncoder.encode(registrationRequestDto.getPassword()),
+                Set.of(Role.ROLE_USER)
         );
 
         userService.createUser(userEntity);
@@ -67,16 +70,5 @@ public class AuthServiceImpl implements AuthService {
                 jwtService.generateToken(username),
                 jwtService.generateRefreshToken(username)
         );
-    }
-
-    private UserEntity toUserEntity(RegistrationRequestDto registrationRequestDto, String encodedPassword) {
-        return UserEntity.builder()
-                .email(registrationRequestDto.getEmail())
-                .username(registrationRequestDto.getUsername())
-                .password(encodedPassword)
-                .name(registrationRequestDto.getName())
-                .surname(registrationRequestDto.getSurname())
-                .roles(Set.of(Role.ROLE_USER))
-                .build();
     }
 }
