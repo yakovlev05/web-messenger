@@ -1,6 +1,8 @@
 package ru.yakovlev05.test.webmessenger.service.message;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.yakovlev05.test.webmessenger.dao.MessageRepository;
 import ru.yakovlev05.test.webmessenger.dao.UserRepository;
@@ -33,12 +35,9 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public List<MessageResponseDto> getMessages(int page, int size, long dateInMs) {
-        return messageRepository.findAll()
-                .stream()
-                .filter(x -> x.getPublished().compareTo(new Date(dateInMs)) <= 0)
-                .sorted((x1, x2) -> x2.getPublished().compareTo(x1.getPublished()))
-                .skip((long) (page - 1) * size)
-                .limit(size)
+        return messageRepository.findByPublishedBefore(
+                        new Date(dateInMs),
+                        PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, "published")))
                 .map(messageMapper::toMessageResponseDto)
                 .toList();
     }
